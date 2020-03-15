@@ -1,16 +1,29 @@
 @startuml 类图
+class Group {
+  - Roby[] robys
+  - int size
+  + Sort()
+  + Run()
+  {static} + NewGroup()
+}
+note top of Group: 族群
 class Stage {
-
+  + State()
+  {static} + NewStage()
 }
 note top of Stage: 舞台
-note top of RandQueue: 随机队列
 class Roby {
   + int[] DNA
-  - int score
-  run()
+  - int[] score
+  + String()
+  + Score()
+  + Movement()
+  - move()
+  + Work()
+  + Run()
+  + Variation()
+  {static} + NewRoby()
 }
-note top of Roby: 机器人罗比
-note top of Group: 族群
-note top of Roulette: 轮盘选择
-' IDModel <|-- Order
+note right of Roby: 机器人罗比
+Group "1" o-- "*" Roby
 @enduml

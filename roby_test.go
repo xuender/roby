@@ -2,6 +2,7 @@ package roby
 
 import (
 	"fmt"
+	"math/rand"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -40,13 +41,14 @@ func TestRoby_Work(t *testing.T) {
 
 // func TestRoby_Run(t *testing.T) {
 func ExampleRoby() {
+	rand.Seed(3)
 	data := "455351051456452243351633534451154250254154221451354510453256220034336004402541356453453250053056215343005531151152203453243006450145534054355644033052004366341442126140213356430424341446226153426123453230616665611301614145544550552231432632141"
 	r := NewRoby()
 	for i, d := range data {
 		r.DNA[i] = int(d - 48)
 	}
-	r.Run(NewStage())
-	fmt.Println(r.scores)
+	r.Work()
+	fmt.Println(r.Score())
 	// Output:
-	// [2 4 8]
+	// 350
 }

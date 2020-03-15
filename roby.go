@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"math/rand"
 	"strconv"
+
+	"github.com/xuender/oil/integer"
 )
 
 // NUM 平均验证次数
-const NUM = 3
+const NUM = 10
 
 // Roby 机器人
 type Roby struct {
@@ -27,7 +29,7 @@ func (r *Roby) String() string {
 // Score 平均分
 func (r *Roby) Score() int {
 	sum := 0
-	max := IntMin
+	max := integer.MinInt
 	for _, s := range r.scores[len(r.scores)-NUM:] {
 		sum += s
 		if max < s {
@@ -47,7 +49,7 @@ func (r *Roby) Movement(around [5]int) int {
 	ret := 0
 	for i, a := range around {
 		if a == 1 {
-			ret += Exp(3, 4-i)
+			ret += integer.Exp(3, 4-i)
 		}
 	}
 	return r.DNA[ret]

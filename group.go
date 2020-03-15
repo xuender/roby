@@ -3,6 +3,8 @@ package roby
 import (
 	"fmt"
 	"sort"
+
+	"github.com/xuender/oil/random"
 )
 
 // Group 族群
@@ -29,11 +31,11 @@ func (g *Group) Run(size int) {
 		g.Sort()
 		fmt.Println(i, "最优罗比:", g.robys[0])
 		// 轮盘优选
-		scores := make([]Scorer, len(g.robys))
+		scores := make([]random.Scorer, len(g.robys))
 		for i, r := range g.robys {
 			scores[i] = r
 		}
-		r := NewRoulette(scores)
+		r := random.NewRoulette(scores)
 		// 保留得分最高的1/4
 		for i := g.size / 10; i < g.size; i++ {
 			// 繁殖变异
