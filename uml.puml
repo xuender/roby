@@ -11,5 +11,6 @@ class Roby {
 }
 note top of Roby: 机器人罗比
 note top of Group: 族群
+note top of Roulette: 轮盘选择
 ' IDModel <|-- Order
 @enduml

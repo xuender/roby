@@ -2,9 +2,13 @@ package roby
 
 import (
 	"bytes"
+	"fmt"
 	"math/rand"
 	"strconv"
 )
+
+// NUM 平均验证次数
+const NUM = 3
 
 // Roby 机器人
 type Roby struct {
@@ -17,27 +21,34 @@ func (r *Roby) String() string {
 	for _, dna := range r.DNA {
 		buffer.WriteString(strconv.Itoa(dna))
 	}
-	return buffer.String()
+	return fmt.Sprintf("{DNA:%s, AGE:%d, SCORE:%d}", buffer.String()[:20], len(r.scores)/NUM, r.Score())
 }
 
-// Average 平均分
-func (r *Roby) Average() int {
+// Score 平均分
+func (r *Roby) Score() int {
 	sum := 0
-	for _, s := range r.scores {
+	max := IntMin
+	for _, s := range r.scores[len(r.scores)-NUM:] {
 		sum += s
+		if max < s {
+			max = s
+		}
 	}
-	return sum / len(r.scores)
+	return max
+	// return sum*100/NUM + sum%NUM
+	// if sum%NUM == 0 {
+	// 	return ret
+	// }
+	// return ret + 1
 }
 
 // Movement 动作
 func (r *Roby) Movement(around [5]int) int {
 	ret := 0
 	for i, a := range around {
-		w := a
-		for f := 0; f < i; f++ {
-			w *= 3
+		if a == 1 {
+			ret += Exp(3, 4-i)
 		}
-		ret += w
 	}
 	return r.DNA[ret]
 }
@@ -79,25 +90,27 @@ func (r *Roby) move(movement int, state [5]int, x, y int) (bool, int, int) {
 
 // Work 捡罐子
 func (r *Roby) Work() {
-	r.run(NewStage())
+	// r.scores = append([]int{})
+	for i := 0; i < NUM; i++ {
+		r.Run(NewStage())
+	}
 }
-func (r *Roby) run(stage Stage) {
+
+// Run 运行
+func (r *Roby) Run(stage Stage) {
 	// 初始位置
 	x := rand.Intn(10)
 	y := rand.Intn(10)
 	score := 0
 
 	// 走50步
-	for i := 0; i < 50; i++ {
+	for i := 0; i < 200; i++ {
 		state := stage.State(x, y)
 		// 获取行动
 		movement := r.Movement(state)
 		// 行动
 		switch movement {
-		case 0:
-		case 1:
-		case 2:
-		case 3:
+		case 0, 1, 2, 3:
 			// 上下左右
 			if ok, nx, ny := r.move(movement, state, x, y); ok {
 				x = nx
@@ -128,12 +141,38 @@ func (r *Roby) run(stage Stage) {
 	r.scores = append(r.scores, score)
 }
 
+// Variation 变异
+func (r *Roby) Variation() {
+	// 变异5次
+	for i := 0; i < 20; i++ {
+		r.DNA[rand.Intn(243)] = rand.Intn(7)
+	}
+}
+
 // NewRoby 新罗比
-func NewRoby() *Roby {
+func NewRoby(robys ...*Roby) *Roby {
 	// 初始化罗比
 	r := Roby{}
-	for i := 0; i < 243; i++ {
-		r.DNA[i] = rand.Intn(7)
+	if len(robys) == 0 {
+		for i := 0; i < 243; i++ {
+			r.DNA[i] = rand.Intn(7)
+		}
+	} else {
+		// 遗传
+		if rand.Intn(2) == 0 {
+			reverse(robys)
+		}
+		for i := range r.DNA {
+			r.DNA[i] = robys[i%len(robys)].DNA[i]
+		}
+		// 变异
+		r.Variation()
 	}
 	return &r
+}
+func reverse(s []*Roby) []*Roby {
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
+		s[i], s[j] = s[j], s[i]
+	}
+	return s
 }

@@ -5,9 +5,8 @@ Copyright © 2020 妙音 <xuender@139.com>
 */
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
+	"github.com/xuender/roby"
 )
 
 // testCmd represents the test command
@@ -21,7 +20,8 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("test called")
+		g := roby.NewGroup(200)
+		g.Run(1000)
 	},
 }
 
