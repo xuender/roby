@@ -48,8 +48,8 @@ func (r *Roby) Score() int {
 func (r *Roby) Movement(around [5]int) int {
 	ret := 0
 	for i, a := range around {
-		if a == 1 {
-			ret += integer.Exp(3, 4-i)
+		if a > 0 {
+			ret += integer.Exp(3, 4-i) * a
 		}
 	}
 	return r.DNA[ret]

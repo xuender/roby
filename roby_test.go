@@ -16,6 +16,9 @@ func TestRoby_Average(t *testing.T) {
 
 func TestRoby_Movement(t *testing.T) {
 	r := NewRoby()
+	for i := range r.DNA {
+		r.DNA[i] = i
+	}
 	m := map[int]bool{}
 	for a := 0; a < 3; a++ {
 		for b := 0; b < 3; b++ {
